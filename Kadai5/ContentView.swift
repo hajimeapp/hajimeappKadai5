@@ -24,7 +24,7 @@ struct ContentView: View {
                     TextFieldView(displayNumber: $displayrightNumber)
                 }
                 Button(action: {
-                    validateWhetherItCanBeCalculated()
+                    calculate()
                 }, label: {
                     Text("計算")
                 })
@@ -44,55 +44,27 @@ struct ContentView: View {
         }
     }
     
-    func validateWhetherItCanBeCalculated() {
-        if !validateInput(displayNumber: displayleftNumber) && !validateInput(displayNumber: displayrightNumber) {
-            showAlert = true
-            alertMessage = "数字を入力してください"
-            displayleftNumber = ""
-            displayrightNumber = ""
-            resultNumber = 0.0
-        } else if !validateInput(displayNumber: displayleftNumber) {
-            showAlert = true
-            alertMessage = "割られる数に数字を入力してください"
-            displayleftNumber = ""
-            resultNumber = 0.0
-        } else if !validateInput(displayNumber: displayrightNumber) {
-            showAlert = true
-            alertMessage = "割る数に数字を入力してください"
-            displayrightNumber = ""
-            resultNumber = 0.0
-        } else if displayrightNumber == "" {
-            showAlert = true
-            alertMessage = "割る数を入力して下さい"
-            resultNumber = 0.0
-        } else if displayrightNumber == "0" {
-            showAlert = true
-            alertMessage = "割る数には0を入力しないで下さい"
-            displayrightNumber = ""
-            resultNumber = 0.0
-        } else if displayleftNumber == "" {
+    func calculate() {
+        guard let leftNumber = Double(displayleftNumber) else {
             showAlert = true
             alertMessage = "割られる数を入力して下さい"
-            resultNumber = 0.0
-        } else {
-            calculate()
+            return
         }
-    }
-    
-    func calculate() {
-        let leftNumber = Double(displayleftNumber)!
-        let rightNumber = Double(displayrightNumber)!
+
+        guard let rightNumber = Double(displayrightNumber) else {
+            showAlert = true
+            alertMessage = "割る数を入力して下さい"
+            return
+        }
+
+        guard rightNumber != 0 else {
+            showAlert = true
+            alertMessage = "割る数には0を入力しないで下さい"
+            return
+        }
+
         resultNumber = leftNumber / rightNumber
     }
-    
-    func validateInput(displayNumber: String) -> Bool {
-        if let _ = Double(displayNumber) {
-            return true
-        } else {
-            return false
-        }
-    }
-    
 }
 
 struct TextFieldView: View {
